@@ -50,6 +50,14 @@ public class OperationUtility {
         updateCourse(courseRepository);
         deleteCourse(courseRepository);
         fetchCourse(courseRepository);
+        assignStudentToCourse(studentRepository,courseRepository);
+        fetchCourseForStudent(studentRepository);
+    }
+
+    private static void fetchCourseForStudent(StudentRepository studentRepository) {
+        Student student = studentRepository.findById(1L).orElseThrow(()->
+                new EntityNotFoundException("Student not found"));
+        student.getCourses().forEach(System.out::println);
     }
 
     private static void fetchCourse(CourseRepository courseRepository) {
@@ -121,6 +129,15 @@ public class OperationUtility {
                 .user(user1)
                 .build();
         studentRepository.save(student);
+    }
+    private static void assignStudentToCourse(StudentRepository studentRepository, CourseRepository courseRepository) {
+        Course course = courseRepository.findById(1L).orElseThrow(()->
+                new EntityNotFoundException("Course not found"));
+        List<Student> students = studentRepository.findAll();
+        students.forEach(student -> {
+            course.assignStudentToCourse(student);
+            studentRepository.save(student);
+        });
     }
 
     private static void fetchInstructor(InstructorRepository instructorRepository) {
